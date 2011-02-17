@@ -19,7 +19,7 @@ class SuperColumnMapperTest extends SpecificationWithJUnit {
   }
   
   "test full prefix" in {
-	scmA.fullPrefix() must be equalTo("A ")
+	scmA.fullPrefix must be equalTo("A ")
 	scmB.fullPrefix(C(4)) must be equalTo("C 4/B ")
   }
 

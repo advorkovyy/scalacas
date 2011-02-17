@@ -21,7 +21,7 @@ class Query(val keys:List[String]) {
 	}
 	
 	def startWithClass[O <: AnyRef]()(implicit mapperO:SuperColumnMapper[O]):Query = {
-		fromSuperColumnName = Some(mapperO.prefix)
+		fromSuperColumnName = Some(mapperO.fullPrefix)
 		this
 	}
 	
@@ -36,13 +36,13 @@ class Query(val keys:List[String]) {
 	}
 
 	def endWithClass[O <: AnyRef]()(implicit mapperO:SuperColumnMapper[O]):Query = {
-		toSuperColumnName = Some(mapperO.prefix)
+		toSuperColumnName = Some(mapperO.fullPrefix + "~")
 		this
 	}
 	
 	def objectsOfClass[O <: AnyRef]()(implicit mapperO:SuperColumnMapper[O]):Query = {
-		fromSuperColumnName = Some(mapperO.prefix)
-		toSuperColumnName = Some(mapperO.prefix + "~")
+		fromSuperColumnName = Some(mapperO.fullPrefix)
+		toSuperColumnName = Some(mapperO.fullPrefix + "~")
 		this
 	}
 
