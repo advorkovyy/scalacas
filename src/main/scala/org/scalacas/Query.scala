@@ -10,22 +10,48 @@ class Query(val keys:List[String]) {
 	var maxColumnCount = Integer.MAX_VALUE
 	var cl = ConsistencyLevel.ONE
 	
-	def from[O <: AnyRef, P <: AnyRef](obj:O, parent : Option[P] = None)(implicit mapperO:SuperColumnMapper[O], mapperP:SuperColumnMapper[P]):Query = {
+	def startWith[O <: AnyRef](obj:O)(implicit mapperO:SuperColumnMapper[O]):Query = {
+		fromSuperColumnName = Some(mapperO.name(obj))
+		this
+	}
+	
+	def startWith[O <: AnyRef, P <: AnyRef](obj:O, parent:P)(implicit mapperO:SuperColumnMapper[O], mapperP:SuperColumnMapper[P]):Query = {
 		fromSuperColumnName = Some(mapperO.name(obj, parent))
 		this
 	}
 	
-	def to[O <: AnyRef, P <: AnyRef](obj:O, parent : Option[P] = None)(implicit mapperO:SuperColumnMapper[O], mapperP:SuperColumnMapper[P]):Query = {
-		toSuperColumnName = Some(mapperO.name(obj, parent))
+	def startWithClass[O <: AnyRef]()(implicit mapperO:SuperColumnMapper[O]):Query = {
+		fromSuperColumnName = Some(mapperO.prefix)
 		this
 	}
 	
+	def endWith[O <: AnyRef](obj:O)(implicit mapperO:SuperColumnMapper[O]):Query = {
+		toSuperColumnName = Some(mapperO.name(obj))
+		this
+	}
+	
+	def endWith[O <: AnyRef, P <: AnyRef](obj:O, parent:P)(implicit mapperO:SuperColumnMapper[O], mapperP:SuperColumnMapper[P]):Query = {
+		toSuperColumnName = Some(mapperO.name(obj, parent))
+		this
+	}
+
+	def endWithClass[O <: AnyRef]()(implicit mapperO:SuperColumnMapper[O]):Query = {
+		toSuperColumnName = Some(mapperO.prefix)
+		this
+	}
+	
+	def objectsOfClass[O <: AnyRef]()(implicit mapperO:SuperColumnMapper[O]):Query = {
+		fromSuperColumnName = Some(mapperO.prefix)
+		toSuperColumnName = Some(mapperO.prefix + "~")
+		this
+	}
+
 	def reversed() = {
 		rev = true
 		this
 	}
 	
-	def max(maxColumnCount:Int) = {
+	def limit(maxColumnCount:Int) = {
 		this.maxColumnCount = maxColumnCount
 		this
 	}
