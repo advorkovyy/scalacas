@@ -41,6 +41,8 @@ class QueryResultTest extends SpecificationWithJUnit {
     val c = qr.find[C]
     c must be equalTo(None)
   }
+  
+  // TODO: parent
 
   private def toBytes(str: String) = Bytes.fromUTF8(str).getBytes
   private def toBytes(i: Int) = Bytes.fromInt(i).getBytes
