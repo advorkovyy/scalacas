@@ -9,21 +9,21 @@ object TestClasses {
   case class B(id: Int)
   case class C(id: Int)
 
-  implicit val scmA = new SuperColumnMapper[A]("A") {
-	  def toSubColumnsList(mutator:Mutator, obj:A) = Nil
-	  def fromSubColumnsList(subColumns:List[Column]) = A(id = Selector.getColumnValue(subColumns, "id").toInt)
+  implicit val scmA = new Mapper[A]("A") {
+	  def objectToColumns(mutator:Mutator, obj:A) = Nil
+	  def columnsToObject(subColumns:Seq[Column]) = A(id = Selector.getColumnValue(subColumns, "id").toInt)
 	  def id(obj:A) = obj.id.toString
   }
   
-  implicit val scmB = new SuperColumnMapper[B]("B") {
-	  def toSubColumnsList(mutator:Mutator, obj:B) = Nil
-	  def fromSubColumnsList(subColumns:List[Column]) = B(id = Selector.getColumnValue(subColumns, "id").toInt)
+  implicit val scmB = new Mapper[B]("B") {
+	  def objectToColumns(mutator:Mutator, obj:B) = Nil
+	  def columnsToObject(subColumns:Seq[Column]) = B(id = Selector.getColumnValue(subColumns, "id").toInt)
 	  def id(obj:B) = obj.id.toString
   }
   
-  implicit val scmC = new SuperColumnMapper[C]("C") {
-	  def toSubColumnsList(mutator:Mutator, obj:C) = Nil
-	  def fromSubColumnsList(subColumns:List[Column]) = C(id = Selector.getColumnValue(subColumns, "id").toInt)
+  implicit val scmC = new Mapper[C]("C") {
+	  def objectToColumns(mutator:Mutator, obj:C) = Nil
+	  def columnsToObject(subColumns:Seq[Column]) = C(id = Selector.getColumnValue(subColumns, "id").toInt)
 	  def id(obj:C) = obj.id.toString
   }
 }

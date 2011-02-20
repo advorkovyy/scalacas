@@ -12,20 +12,7 @@ import java.lang.reflect.{ Method, ParameterizedType, Constructor }
  * @author Ruud Diterwich
  */
 object ScalaReflection {
-
   private val infoMap = new mutable.HashMap[Class[_], RichClass[_]] with mutable.SynchronizedMap[Class[_], RichClass[_]]
-
-  val simpleTypes = Set[Class[_]](
-    classOf[String],
-    classOf[Int],
-    classOf[java.lang.Integer],
-    classOf[Long],
-    classOf[java.lang.Long],
-    classOf[Boolean],
-    classOf[java.lang.Boolean],
-    classOf[UUID],
-    classOf[Date])
-
   implicit def richClass[T](c: Class[T]): RichClass[T] = infoMap.getOrElseUpdate(c, new RichClass[T](c)).asInstanceOf[RichClass[T]]
 }
 
@@ -44,27 +31,25 @@ class RichClass[T](c: Class[T]) {
   /**
    * Properties of the class.
    */
-  val properties = for {
-    getter <- c.getMethods.filter { m =>
-      m.getReturnType != classOf[Void] && m.getParameterTypes.length == 0
-    }
-    setter = c.getMethods.find(_.getName == getter.getName + "_$eq")
+  val properties = (for {
+    getter <- c.getMethods
     if (!getter.getName.contains('$'))
     if (getter.getParameterTypes.length == 0)
     if (getter.getReturnType != Void.TYPE)
-  } yield new RichProperty(getter, setter)
+    setter = c.getMethods.find(_.getName == getter.getName + "_$eq")
+  } yield new ScalaProperty(getter, setter)) toList
 
   /**
    * TODO Rewrite with more efficient implementation.
    * @param name
    * @return
    */
-  def properties(name: String): Option[RichProperty] = properties.find(_.name == name)
+  def properties(name: String): Option[ScalaProperty] = properties.find(_.name == name)
 
   /**
    * Creates a new instance. Only classes that have no constructor
    * parameters or with a constructor that has default values for
-   * all its parameters are supported.
+   * all its parameters are supported. Inner classes are not supported.
    * Same default parameter values are used for each constructor invocation.
    */
   def create: T = constructor.newInstance(constructorPars: _*)
@@ -82,7 +67,7 @@ class RichClass[T](c: Class[T]) {
   }
 
   /**
-   * Constructor. Secondary constructors are not supported
+   * Constructor. Secondary constructors are not supported.
    */
   private lazy val constructor: Constructor[T] = {
     require(c.getConstructors().size > 0, c.getName + " has no constructors")
@@ -97,7 +82,7 @@ class RichClass[T](c: Class[T]) {
   def name = c.getName
 }
 
-class RichProperty(val getter: Method, val setter: Option[Method]) {
+class ScalaProperty(val getter: Method, val setter: Option[Method]) {
   val hasCollectionType = classOf[scala.collection.Seq[_]].isAssignableFrom(propertyType)
   val hasMapType = classOf[scala.collection.Map[_, _]].isAssignableFrom(propertyType)
   val hasOptionType = classOf[scala.Option[_]].isAssignableFrom(propertyType)
@@ -106,8 +91,6 @@ class RichProperty(val getter: Method, val setter: Option[Method]) {
     if (hasCollectionType || hasOptionType) parameterType
     else if (hasArrayType) propertyType.getComponentType
     else propertyType
-
-  val hasSimpleType = ScalaReflection.simpleTypes.contains(underlyingType)
 
   def name = getter.getName
   def propertyType: Class[_] = getter.getReturnType

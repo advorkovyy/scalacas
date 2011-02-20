@@ -4,11 +4,11 @@ import org.scale7.cassandra.pelops._
 import scala.collection.JavaConversions._
 
 object Mutators {
-	def write[O <: AnyRef](key : String, obj : O)(implicit mapperO:SuperColumnMapper[O]) = (mutator : Mutator, cf:ColumnFamily) => {
-		mutator.writeSubColumns(cf.columnFamilyName, key, mapperO.name(obj), mapperO.toSubColumnsList(mutator, obj))
+	def write[O <: AnyRef](key : String, obj : O)(implicit mapperO:Mapper[O]) = (mutator : Mutator, cf:ColumnFamily) => {
+		mutator.writeSubColumns(cf.columnFamilyName, Bytes.fromUTF8(key), Bytes.fromUTF8(mapperO.name(obj)), mapperO.objectToColumns(mutator, obj), true)
 	}
 	
-	def write[O <: AnyRef, P <: AnyRef](key : String, obj : O, parent : P)(implicit mapperO:SuperColumnMapper[O], mapperP:SuperColumnMapper[P]) = (mutator : Mutator, cf:ColumnFamily) => {
-		mutator.writeSubColumns(cf.columnFamilyName, key, mapperO.name(obj, parent), mapperO.toSubColumnsList(mutator, obj))
+	def write[O <: AnyRef, P <: AnyRef](key : String, obj : O, parent : P)(implicit mapperO:Mapper[O], mapperP:Mapper[P]) = (mutator : Mutator, cf:ColumnFamily) => {
+		mutator.writeSubColumns(cf.columnFamilyName, Bytes.fromUTF8(key), Bytes.fromUTF8(mapperO.name(obj, parent)), mapperO.objectToColumns(mutator, obj), true)
 	}
 }

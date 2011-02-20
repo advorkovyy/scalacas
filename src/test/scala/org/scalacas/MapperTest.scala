@@ -8,7 +8,7 @@ import org.junit.runner.RunWith
 import org.specs.runner.JUnitSuiteRunner
 
 @RunWith(classOf[JUnitSuiteRunner])
-class SuperColumnMapperTest extends SpecificationWithJUnit {
+class MapperTest extends SpecificationWithJUnit {
 
   import TestClasses._
 
