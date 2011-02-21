@@ -23,11 +23,11 @@ class QueryResult(row: Iterable[SuperColumn]) {
   
   private def filterPrefix[O <: AnyRef](fullPrefix:String, mapper: Mapper[O]) = {
 	for (sc <- row if Bytes.toUTF8(sc.getName).startsWith(fullPrefix))
-      yield mapper.columnsToObject(sc.getColumns toList)  
+      yield mapper.columnsToObject(sc.getColumns)  
   }
   
   private def findPrefix[O <: AnyRef](fullPrefix:String, mapper: Mapper[O]) = {
 	for (sc <- row find { sc => Bytes.toUTF8(sc.getName).startsWith(fullPrefix) } )
-      yield mapper.columnsToObject(sc.getColumns toList)
+      yield mapper.columnsToObject(sc.getColumns)
   }
 }

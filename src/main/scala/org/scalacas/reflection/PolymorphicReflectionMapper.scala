@@ -13,7 +13,7 @@ import ScalaReflection._
  * object conversion can be 2-3 times slower compared to {@link ReflectionMapper}.
  * 
  * If performance is an issue, implement your own polymorphic mapper. General idea is the same:
- * add column with the name starting with '-' (ignored by ReflectionMapper) and use it's
+ * add the column with name starting with '-' (ignored by ReflectionMapper) and use it's
  * value to decide which subclass instance you want to create.
  * 
  * @author Alexander Dvorkovyy

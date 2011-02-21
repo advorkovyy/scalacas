@@ -3,7 +3,7 @@ package org.scalacas
 import org.scale7.cassandra.pelops._
 import org.apache.cassandra.thrift._
 
-class Query(val keys:List[String]) {
+class Query(val keys:Seq[String]) {
 	var fromSuperColumnName:Option[String] = None
 	var toSuperColumnName:Option[String] = None
 	var rev = false

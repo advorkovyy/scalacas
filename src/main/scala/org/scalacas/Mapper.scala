@@ -27,7 +27,7 @@ abstract class Mapper[A <: AnyRef](val prefix:String) {
 		sb.result
 	}
 	
-	lazy val fullPrefix = prefix + " " 
+	val fullPrefix = prefix + " " 
 		
 	def fullPrefix[P <: AnyRef](parent:P)(implicit mP:Mapper[P]):String = {
 		val sb = new StringBuilder(mP.name(parent))

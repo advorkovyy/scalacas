@@ -20,9 +20,8 @@ class ColumnFamily(val db: Database, val columnFamilyName: String) {
     mutator.execute(cl)
   }
 
-  def key(k: String) = new Query(List(k))
-  def keys(ks: List[String]) = new Query(ks)
-  def keys(ks: String*) = new Query(ks toList)
+  def key(k: String) = new Query(Seq(k))
+  def keys(ks: String*) = new Query(ks)
 
   def query(qry: Query):Iterable[QueryResult] = {
     val selector = Pelops.createSelector("pool")
