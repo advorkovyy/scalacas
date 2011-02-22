@@ -10,13 +10,13 @@ import org.specs.SpecificationWithJUnit
 import org.junit.runner.RunWith
 import org.specs.runner.JUnitSuiteRunner
 
-class ReflectionTest (
-		var i:Int = 1,
-		var i2:Integer = 2,
-		var s:String = "whatever",
-		var l:Long = 3,
+class ReflectionTest extends HasId {
+		var i:Int = 1
+		var i2:Integer = 2
+		var s:String = "whatever"
+		var l:Long = 3
 		var bd:BigDecimal = 2.33
-) extends HasId { def id = i.toString }
+   def id = i.toString }
 	
 @RunWith(classOf[JUnitSuiteRunner])
 class ReflectionPerformanceTest extends SpecificationWithJUnit {
@@ -73,10 +73,11 @@ class ReflectionPerformanceTest extends SpecificationWithJUnit {
 		val mutator = new Mutator(null, 0, false)
 		val scl = polyMapper.objectToColumns(mutator, rt)
 		scl.size must be(6)
-			
+		
+		testMapperPerformance("polymorphic mapper", polyMapper, scl)	
 		testMapperPerformance("custom mapper", mapper, scl)
 		testMapperPerformance("reflection mapper", reflectionMapper, scl)
-		testMapperPerformance("polymorphic mapper", polyMapper, scl)
+		
 	}
 	
 	private def testMapperPerformance[A <: AnyRef](mapperName:String, mapper:Mapper[A], scl:Seq[Column]) {
@@ -87,6 +88,7 @@ class ReflectionPerformanceTest extends SpecificationWithJUnit {
 			val obj = mapper.columnsToObject(scl)
 		}
 		
-		println("Mapping columns to object with %s 1M times: %d ms".format(mapperName, (System.nanoTime - start) / 1000000))
+		val end = System.nanoTime
+		println("Mapping columns to object with %s 2000 times: %d ms".format(mapperName, (end - start) / 1000000))
 	}
 }

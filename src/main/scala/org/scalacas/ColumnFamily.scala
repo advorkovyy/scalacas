@@ -26,7 +26,7 @@ class ColumnFamily(val db: Database, val columnFamilyName: String) {
   def query(qry: Query):Iterable[QueryResult] = {
     val selector = Pelops.createSelector("pool")
       qry.keys match {
-        case key :: Nil => Option(new QueryResult(selector.getSuperColumnsFromRow(columnFamilyName, key, qry.toSlicePredicate, qry.cl)))
+        case key :: Nil => Iterable(new QueryResult(selector.getSuperColumnsFromRow(columnFamilyName, key, qry.toSlicePredicate, qry.cl)))
         case _ => selector.getSuperColumnsFromRowsUtf8Keys(columnFamilyName, qry.keys, qry.toSlicePredicate, qry.cl) values () map (new QueryResult(_))
       }    
   }
