@@ -1,0 +1,64 @@
+package org.scalacas.serialization
+
+import java.nio.ByteBuffer
+import java.lang.reflect.{ Type, ParameterizedType }
+import org.scale7.cassandra.pelops.Bytes
+
+trait Serializer[A] {
+  def serialize(obj: A): Bytes
+  def deserialize(buffer: ByteBuffer): A
+}
+
+object Serializers extends NumericTypesSerializers with CharTypesSerializers with UuidTypesSerializers with DateTypesSerializers {
+  private val serializers = Map[Class[_], Serializer[_]](
+    classOf[String] -> UTF8Serializer,
+    classOf[Long] -> LongSerializer,
+    classOf[java.lang.Long] -> LongSerializer,
+    classOf[Int] -> IntSerializer,
+    classOf[java.lang.Integer] -> IntSerializer,
+    classOf[Short] -> ShortSerializer,
+    classOf[java.lang.Short] -> ShortSerializer,
+    classOf[Byte] -> ByteSerializer,
+    classOf[java.lang.Byte] -> ByteSerializer,
+    classOf[Char] -> CharSerializer,
+    classOf[java.lang.Character] -> CharSerializer,
+    classOf[Double] -> DoubleSerializer,
+    classOf[java.lang.Double] -> DoubleSerializer,
+    classOf[Float] -> FloatSerializer,
+    classOf[java.lang.Float] -> FloatSerializer,
+    classOf[java.util.UUID] -> UUIDSerializer,
+    classOf[com.eaio.uuid.UUID] -> TimeUUIDSerializer,
+    classOf[java.util.Date] -> UtilDateSerializer,
+    classOf[java.sql.Date] -> SqlDateSerializer,
+    classOf[java.sql.Timestamp] -> SqlTimestampSerializer,
+    classOf[scala.math.BigDecimal] -> ScalaBigDecimalSerializer,
+    classOf[java.math.BigDecimal] -> JavaBigDecimalSerializer,
+    classOf[scala.math.BigInt] -> ScalaBigDecimalSerializer,
+    classOf[java.math.BigInteger] -> JavaBigDecimalSerializer)
+
+  def findSerializerFor(t: Type):Option[Serializer[_]] = t match {
+    case c: Class[_] => serializers.get(c)
+    case pt: ParameterizedType =>
+      pt.getActualTypeArguments()(0) match {
+        case c: java.lang.Class[_] => serializers.get(c).map(new OptionSerializer(_))
+        case _ => None
+      }
+  }
+
+  def toBytes[A](v: A)(implicit s: Serializer[A]) = s.serialize(v)
+
+  def fromBytes[A](buffer: ByteBuffer)(implicit s: Serializer[A]): A = s.deserialize(buffer)
+
+  class OptionSerializer[A](s: Serializer[A]) extends Serializer[Option[A]] {
+    def serialize(obj: Option[A]): Bytes = obj match {
+      case null => Bytes.NULL
+      case None => Bytes.NULL
+      case Some(x) => s.serialize(x)
+    }
+
+    def deserialize(buffer: ByteBuffer): Option[A] = {
+      if (buffer == null) None
+      else Option(s.deserialize(buffer))
+    }
+  }  
+}

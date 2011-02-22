@@ -5,13 +5,13 @@ import org.scale7.cassandra.pelops.Bytes
 /**
  * Implement this trait for your custom types and mixin to your {@link org.scalacas.Mapper}.
  * 
- * Use 'abstract override' feature to allow stacking of multiple serializers. See StandardSerializer
+ * Use 'abstract override' feature to allow stacking of multiple Serializer2s. See StandardSerializer2
  * implementation for the reference.
  * 
  * @author Alexander Dvorkovyy
  *
  */
-trait Serializer {
+trait Serializer2 {
 	def canSerialize(c:Class[_]) = false
 	def serialize(obj:AnyRef):Bytes = throw new IllegalArgumentException("Cannot serialize " + obj + (if ( obj != null ) " of class " + obj.getClass))
 	def deserialize(c:Class[_], buffer:Bytes):AnyRef = throw new IllegalArgumentException("Cannot deserialize instance of class " + c.getName)
@@ -38,7 +38,7 @@ trait Serializer {
  * @author Alexander Dvorkovyy
  *
  */
-trait StandardSerializer extends Serializer {
+trait StandardSerializer extends Serializer2 {
 	abstract override def canSerialize(c:Class[_]) = 
 		(c == classOf[java.lang.String]) || 
 		(c == classOf[java.lang.Boolean]) || (c == classOf[Boolean]) ||
