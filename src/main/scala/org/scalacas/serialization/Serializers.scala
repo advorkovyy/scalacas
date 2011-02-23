@@ -11,6 +11,24 @@ trait Serializer[A] {
   def deserialize(buffer: Array[Byte]): A = deserialize(Bytes.fromByteArray(buffer))
 }
 
+/**
+ * Supports serialization of simple data types, including scala.Option<p>
+ * 
+ * Dates are serialized as following:
+ * <ul>
+ *   <li>java.util.Date : long millis are serialized</li>
+ *   <li>java.sql.Date : yyyy-MM-dd string serialized, see {@link java.sql.Date}</li>
+ *   <li>java.sql.Timestamp : yyyy-MM-dd HH:mm.SSS string serialized,  see {@link java.sql.Timestamp}</li>
+ * </ul>
+ * 
+ * Pay attention to this if your application servers located in different time zones,
+ * because deserialization may give unexpected results otherwise.<p>
+ * 
+ * BigDecimal and BigInt are serialized as String.<p>
+ * 
+ * @author Alexander Dvorkovyy
+ *
+ */
 object Serializers extends NumericTypesSerializers with CharTypesSerializers with UuidTypesSerializers with DateTypesSerializers {
   private val serializers = Map[Class[_], Serializer[_ <: AnyRef]](
     classOf[String] -> UTF8Serializer,

@@ -5,7 +5,7 @@ import org.apache.cassandra.thrift._
 import scala.collection.JavaConversions._
 
 class Database(val cluster: Cluster, val keyspaceName: String) {
-  Pelops.addPool("pool", cluster, keyspaceName)
+  Pelops.addPool("pool", cluster, keyspaceDef.name)
 
   def keyspaceDef = {
     val keyspaceManager = new KeyspaceManager(cluster)
@@ -13,7 +13,6 @@ class Database(val cluster: Cluster, val keyspaceName: String) {
     var result: KsDef = null
     try {
       result = keyspaceManager.getKeyspaceSchema(keyspaceName)
-      println("keyspace optiview found")
     } catch {
       case e: NotFoundException =>
         result = new KsDef(keyspaceName, "org.apache.cassandra.locator.SimpleStrategy", 1, List[CfDef]())

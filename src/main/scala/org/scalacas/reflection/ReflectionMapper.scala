@@ -10,19 +10,16 @@ import ScalaReflection._
 import org.scalacas.serialization.Serializers._
 
 /**
- * Mapper implementation based on Java reflection. Does not support polymorphism.
+ * Mapper implementation based on Java reflection. Does not support polymorphism.<p>
  * 
  * Domain object's var members of serializable types are mapped to columns. 
- * Serializers for custom types can be mixed-in. Domain object must implement {@link HasId}.
- * If column name starts with '-' it is ignored during columns to object mapping.
+ * Domain object must implement {@link HasId}.
+ * If column name starts with '-' it is ignored during columns to object mapping.<p>
  * 
- * Add it in your ColumnFamily implementation:
- * <pre>
+ * Add it in your ColumnFamily implementation:<p>
  * <code>
  * implicit val myClassMapper = new ReflectionMapper[MyClass]("A", new MyClass)
- * implicit val myOtherClassMapper = new ReflectionMapper[MyOtherClass]("B", new MyOtherClass) with MyEnumSerializer
  * </code>
- * </pre>
  * 
  * @author Alexander Dvorkovyy
  *
