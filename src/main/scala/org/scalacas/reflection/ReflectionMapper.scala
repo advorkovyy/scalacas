@@ -1,11 +1,13 @@
 package org.scalacas.reflection
 
 import collection.mutable
+import java.util.Arrays
 
 import org.scalacas.{Mapper, HasId, HasIdSupport}
 import org.scale7.cassandra.pelops._
 import org.apache.cassandra.thrift._
 import ScalaReflection._
+import org.scalacas.serialization.Serializers._
 
 /**
  * Mapper implementation based on Java reflection. Does not support polymorphism.
@@ -26,14 +28,14 @@ import ScalaReflection._
  *
  */
 class ReflectionMapper[A <: HasId](prefix:String, ctor: =>A) extends Mapper[A](prefix) with ReflectionSupport[A] with HasIdSupport[A] {
-	protected def createObjectInstance(colums:Seq[(String, Bytes)]):A = ctor
+	protected def createObjectInstance(colums:Seq[Column]):A = ctor
 }
 
-trait ReflectionSupport[A <: AnyRef] extends StandardSerializer { self:Mapper[A] =>
+trait ReflectionSupport[A <: AnyRef] { self:Mapper[A] =>
 	
 	def objectToColumns(mutator:Mutator, obj:A):List[Column] = {		
 		for ( p <- getProperties(obj.getClass) ) 
-		yield mutator.newColumn(p.name, serialize(p.get(obj)))
+		yield mutator.newColumn(p.nameBytes, p.serializer.get.serialize(p.get(obj)))
 	}
 	
 	/**
@@ -43,37 +45,34 @@ trait ReflectionSupport[A <: AnyRef] extends StandardSerializer { self:Mapper[A]
 	 * no type information is stored with column. 
 	 */
 	def columnsToObject(subColumns:Seq[Column]):A = {
-		val values = subColumns.map(col => (new Bytes(col.getName).toUTF8, new Bytes(col.getValue)))
+		//val values = subColumns.map(col => (new Bytes(col.getName).toUTF8, new Bytes(col.getValue)))
 		
-		val obj = createObjectInstance(values)
+		val obj = createObjectInstance(subColumns)
 		val properties = getProperties(obj.getClass)
-		for ((name, value) <- values if !(name startsWith "-")) {
-			properties.find(_.name == name) match {
+		for (col <- subColumns;
+			 colName = col.getName;
+			 if colName.size > 0 && colName(0) != '-' 
+		) properties.find( p => Arrays.equals(p.nameBytes.getBytes.array, colName) ) match {
 				case Some(p) =>
 					try {
-						val converted : AnyRef = deserialize(p.underlyingType, value)
-						p.set(obj, if (p.hasOptionType) Option(converted) else converted)
+						p.set(obj, p.serializer.get.deserialize(col.getValue))
 					} catch {
-						case t => println("Warning: Couldn't set property '%s' in %s: %s".format(name, obj.getClass, t.getMessage))
+						case t => println("Warning: Couldn't set property '%s' in %s: %s".format(fromBytes[String](colName), obj.getClass, t.getMessage))
 						t.printStackTrace()
 					}
 				case None => 
-					println("Warning: property '%s' not serialized in %s".format(name, obj.getClass))
-			}			
+					println("Warning: property '%s' not serialized in %s".format(fromBytes[String](colName), obj.getClass))
 		}
 		
 		obj.asInstanceOf[A]
 	}
 	
-	protected def createObjectInstance(colums:Seq[(String, Bytes)]):A
+	protected def createObjectInstance(colums:Seq[Column]):A
 	
 	private val properties = new mutable.HashMap[Class[_], List[ScalaProperty]] with mutable.SynchronizedMap[Class[_], List[ScalaProperty]]
-	private def getProperties(c:Class[_]) = properties.getOrElseUpdate(c, {
-		c.properties.
-			filter { p => 
-				(!p.isReadOnly) &&
-				((p.hasOptionType && canSerialize(p.underlyingType)) || canSerialize(p.propertyType))
-			}
+	private def getProperties(c:Class[_]) = properties.getOrElseUpdate(c, c.properties.filter { p => 
+		(!p.isReadOnly) && 
+		(if (p.serializer.isEmpty) { println("Skipping property %s of class %s: no serializer found"); false} else true) 
 	})
 }
 

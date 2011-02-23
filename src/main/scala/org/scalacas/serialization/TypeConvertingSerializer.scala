@@ -15,7 +15,7 @@ abstract class TypeConvertingSerializer[A <: AnyRef, B <: AnyRef](implicit bytes
   
   def serialize(obj: A): Bytes = if (obj == null) Bytes.NULL else bytesSerializer.serialize(convertTo(obj))
   
-  def deserialize(buffer: ByteBuffer): A = {
+  def deserialize(buffer: Bytes): A = {
     val b: B = bytesSerializer.deserialize(buffer)
     if (b == null) null.asInstanceOf[A]
     else convertFrom(b)

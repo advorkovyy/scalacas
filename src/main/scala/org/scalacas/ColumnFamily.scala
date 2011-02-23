@@ -19,6 +19,22 @@ class ColumnFamily(val db: Database, val columnFamilyName: String) {
       m(mutator, this)
     mutator.execute(cl)
   }
+  
+  def deleteRow(key:String, cl:ConsistencyLevel = ConsistencyLevel.ONE) {
+	  val rowDeletor = Pelops.createRowDeletor("pool")
+	  rowDeletor.deleteRow(columnFamilyName, key, cl)
+  }
+  
+  def deleteRows(cl:ConsistencyLevel, keys: String*) {
+	  val rowDeletor = Pelops.createRowDeletor("pool")
+	  for (key <- keys)
+	 	  rowDeletor.deleteRow(columnFamilyName, key, cl)
+  }
+  
+  def truncate() {
+	val columnFamilyManager = new ColumnFamilyManager(db.cluster, db.keyspaceName)
+	columnFamilyManager.truncateColumnFamily(columnFamilyName)
+  }
 
   def key(k: String) = new Query(Seq(k))
   def keys(ks: String*) = new Query(ks)

@@ -70,13 +70,31 @@ class ReflectionPerformanceTest extends SpecificationWithJUnit {
 		val reflectionMapper = new ReflectionMapper[ReflectionTest]("", new ReflectionTest)
 		val polyMapper = new PolymorphicReflectionMapper[ReflectionTest]("")
 		
+		rt.i = 10
+		rt.i2 = 20
+		rt.s = "xxx aaa7"
+		rt.l = 30
+		rt.bd = 45.78
+		
 		val mutator = new Mutator(null, 0, false)
 		val scl = polyMapper.objectToColumns(mutator, rt)
 		scl.size must be(6)
 		
-		testMapperPerformance("polymorphic mapper", polyMapper, scl)	
+		val obj = reflectionMapper.columnsToObject(scl)
+		obj.i must be equalTo(rt.i)
+		obj.i2 must be equalTo(rt.i2)
+		obj.s must be equalTo(rt.s)
+		obj.l must be equalTo(rt.l)
+		obj.bd must be equalTo(rt.bd)
+		
 		testMapperPerformance("custom mapper", mapper, scl)
 		testMapperPerformance("reflection mapper", reflectionMapper, scl)
+		testMapperPerformance("polymorphic mapper", polyMapper, scl)	
+		
+		
+		testMapperPerformance("reflection mapper", reflectionMapper, scl)
+		testMapperPerformance("polymorphic mapper", polyMapper, scl)
+		testMapperPerformance("custom mapper", mapper, scl)
 		
 	}
 	

@@ -8,13 +8,13 @@ trait UuidTypesSerializers {
     @inline
     def serialize(v: java.util.UUID) = Bytes.fromUuid(v)
     @inline
-    def deserialize(buffer: ByteBuffer) = Bytes.fromByteBuffer(buffer).toUuid
+    def deserialize(buffer: Bytes) = buffer.toUuid
   }
 
   implicit object TimeUUIDSerializer extends Serializer[com.eaio.uuid.UUID] {
     @inline
     def serialize(v: com.eaio.uuid.UUID) = Bytes.fromTimeUuid(v)
     @inline
-    def deserialize(buffer: ByteBuffer) = Bytes.fromByteBuffer(buffer).toTimeUuid
+    def deserialize(buffer: Bytes) = buffer.toTimeUuid
   }
 }

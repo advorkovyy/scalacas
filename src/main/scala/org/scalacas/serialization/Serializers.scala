@@ -6,11 +6,13 @@ import org.scale7.cassandra.pelops.Bytes
 
 trait Serializer[A] {
   def serialize(obj: A): Bytes
-  def deserialize(buffer: ByteBuffer): A
+  def deserialize(buffer: Bytes): A
+  def deserialize(buffer: ByteBuffer): A = deserialize(Bytes.fromByteBuffer(buffer))
+  def deserialize(buffer: Array[Byte]): A = deserialize(Bytes.fromByteArray(buffer))
 }
 
 object Serializers extends NumericTypesSerializers with CharTypesSerializers with UuidTypesSerializers with DateTypesSerializers {
-  private val serializers = Map[Class[_], Serializer[_]](
+  private val serializers = Map[Class[_], Serializer[_ <: AnyRef]](
     classOf[String] -> UTF8Serializer,
     classOf[Long] -> LongSerializer,
     classOf[java.lang.Long] -> LongSerializer,
@@ -36,18 +38,21 @@ object Serializers extends NumericTypesSerializers with CharTypesSerializers wit
     classOf[scala.math.BigInt] -> ScalaBigDecimalSerializer,
     classOf[java.math.BigInteger] -> JavaBigDecimalSerializer)
 
-  def findSerializerFor(t: Type):Option[Serializer[_]] = t match {
+  def findSerializerFor(t: Type):Option[Serializer[_ <: AnyRef]] = t match {
     case c: Class[_] => serializers.get(c)
-    case pt: ParameterizedType =>
+    case pt: ParameterizedType if (pt.getRawType == classOf[Option[_]]) =>
       pt.getActualTypeArguments()(0) match {
         case c: java.lang.Class[_] => serializers.get(c).map(new OptionSerializer(_))
         case _ => None
       }
+    case _ => None
   }
 
   def toBytes[A](v: A)(implicit s: Serializer[A]) = s.serialize(v)
 
   def fromBytes[A](buffer: ByteBuffer)(implicit s: Serializer[A]): A = s.deserialize(buffer)
+  def fromBytes[A](buffer: Array[Byte])(implicit s: Serializer[A]): A = s.deserialize(buffer)
+  def fromBytes[A](buffer: Bytes)(implicit s: Serializer[A]): A = s.deserialize(buffer)
 
   class OptionSerializer[A](s: Serializer[A]) extends Serializer[Option[A]] {
     def serialize(obj: Option[A]): Bytes = obj match {
@@ -56,7 +61,7 @@ object Serializers extends NumericTypesSerializers with CharTypesSerializers wit
       case Some(x) => s.serialize(x)
     }
 
-    def deserialize(buffer: ByteBuffer): Option[A] = {
+    def deserialize(buffer: Bytes): Option[A] = {
       if (buffer == null) None
       else Option(s.deserialize(buffer))
     }

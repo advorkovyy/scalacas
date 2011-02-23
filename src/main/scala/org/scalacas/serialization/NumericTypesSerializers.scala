@@ -9,56 +9,56 @@ trait NumericTypesSerializers extends CharTypesSerializers {
     @inline
     def serialize(v: java.lang.Long) = Bytes.fromLong(v)
     @inline
-    def deserialize(buffer: ByteBuffer) = Bytes.fromByteBuffer(buffer).toLong(null)
+    def deserialize(buffer: Bytes) = buffer.toLong(null)
   }
 
   implicit object PrimitiveLongSerializer extends Serializer[Long] {
     @inline
     def serialize(v: Long) = Bytes.fromLong(v)
     @inline
-    def deserialize(buffer: ByteBuffer) = Bytes.fromByteBuffer(buffer).toLong
+    def deserialize(buffer: Bytes) = buffer.toLong
   }
 
   implicit object IntSerializer extends Serializer[java.lang.Integer] {
     @inline
     def serialize(v: java.lang.Integer) = Bytes.fromInt(v)
     @inline
-    def deserialize(buffer: ByteBuffer) = Bytes.fromByteBuffer(buffer).toInt(null)
+    def deserialize(buffer: Bytes) = buffer.toInt(null)
   }
 
   implicit object PrimitiveIntSerializer extends Serializer[Int] {
     @inline
     def serialize(v: Int) = Bytes.fromInt(v)
     @inline
-    def deserialize(buffer: ByteBuffer) = Bytes.fromByteBuffer(buffer).toInt
+    def deserialize(buffer: Bytes) = buffer.toInt
   }
 
   implicit object ShortSerializer extends Serializer[java.lang.Short] {
     @inline
     def serialize(v: java.lang.Short) = Bytes.fromShort(v)
     @inline
-    def deserialize(buffer: ByteBuffer) = Bytes.fromByteBuffer(buffer).toShort(null)
+    def deserialize(buffer: Bytes) = buffer.toShort(null)
   }
 
   implicit object PrimitiveShortSerializer extends Serializer[Short] {
     @inline
     def serialize(v: Short) = Bytes.fromShort(v)
     @inline
-    def deserialize(buffer: ByteBuffer) = Bytes.fromByteBuffer(buffer).toShort
+    def deserialize(buffer: Bytes) = buffer.toShort
   }
 
   implicit object ByteSerializer extends Serializer[java.lang.Byte] {
     @inline
     def serialize(v: java.lang.Byte) = Bytes.fromByte(v)
     @inline
-    def deserialize(buffer: ByteBuffer) = Bytes.fromByteBuffer(buffer).toByte(null)
+    def deserialize(buffer: Bytes) = buffer.toByte(null)
   }
 
   implicit object PrimitiveByteSerializer extends Serializer[Byte] {
     @inline
     def serialize(v: Byte) = Bytes.fromByte(v)
     @inline
-    def deserialize(buffer: ByteBuffer) = Bytes.fromByteBuffer(buffer).toByte
+    def deserialize(buffer: Bytes) = buffer.toByte
   }
 
   
@@ -66,28 +66,28 @@ trait NumericTypesSerializers extends CharTypesSerializers {
     @inline
     def serialize(v: java.lang.Double) = Bytes.fromDouble(v)
     @inline
-    def deserialize(buffer: ByteBuffer) = Bytes.fromByteBuffer(buffer).toDouble(null)
+    def deserialize(buffer: Bytes) = buffer.toDouble(null)
   }
 
   implicit object PrimitiveDoubleSerializer extends Serializer[Double] {
     @inline
     def serialize(v: Double) = Bytes.fromDouble(v)
     @inline
-    def deserialize(buffer: ByteBuffer) = Bytes.fromByteBuffer(buffer).toDouble
+    def deserialize(buffer: Bytes) = buffer.toDouble
   }
 
   implicit object FloatSerializer extends Serializer[java.lang.Float] {
     @inline
     def serialize(v: java.lang.Float) = Bytes.fromFloat(v)
     @inline
-    def deserialize(buffer: ByteBuffer) = Bytes.fromByteBuffer(buffer).toFloat(null)
+    def deserialize(buffer: Bytes) = buffer.toFloat(null)
   }
 
   implicit object PrimitiveFloatSerializer extends Serializer[Float] {
     @inline
     def serialize(v: Float) = Bytes.fromFloat(v)
     @inline
-    def deserialize(buffer: ByteBuffer) = Bytes.fromByteBuffer(buffer).toFloat
+    def deserialize(buffer: Bytes) = buffer.toFloat
   }
   
   implicit object ScalaBigDecimalSerializer extends TypeConvertingSerializer[scala.math.BigDecimal, String] {

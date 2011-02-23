@@ -10,6 +10,7 @@ import java.lang.reflect.{ Method, ParameterizedType, Constructor }
  * Usage: <code>import org.scalacas.reflection.ScalaReflection._</code>
  *
  * @author Ruud Diterwich
+ * @author Alexander Dvorkovyy
  */
 object ScalaReflection {
   private val infoMap = new mutable.HashMap[Class[_], RichClass[_]] with mutable.SynchronizedMap[Class[_], RichClass[_]]
@@ -83,6 +84,9 @@ class RichClass[T](c: Class[T]) {
 }
 
 class ScalaProperty(val getter: Method, val setter: Option[Method]) {
+  import org.scalacas.serialization.Serializer
+  import org.scalacas.serialization.Serializers._
+  
   val hasCollectionType = classOf[scala.collection.Seq[_]].isAssignableFrom(propertyType)
   val hasMapType = classOf[scala.collection.Map[_, _]].isAssignableFrom(propertyType)
   val hasOptionType = classOf[scala.Option[_]].isAssignableFrom(propertyType)
@@ -93,11 +97,16 @@ class ScalaProperty(val getter: Method, val setter: Option[Method]) {
     else propertyType
 
   def name = getter.getName
+  lazy val nameBytes = toBytes(name)
+  
   def propertyType: Class[_] = getter.getReturnType
   def hasArrayType = propertyType.isArray
   def isReadOnly = setter == None
-  def get(obj: AnyRef): AnyRef = getter.invoke(obj)
+  def get[A <: AnyRef](obj: AnyRef): A = getter.invoke(obj).asInstanceOf[A]
   def set[A <: AnyRef](obj: AnyRef, value: A) = setter.get.invoke(obj, value)
+  
+  lazy val serializer:Option[Serializer[_ <: AnyRef]] = findSerializerFor(getter.getGenericReturnType)
+  
   private def parameterType = getter.getGenericReturnType match {
     case t: ParameterizedType => t.getActualTypeArguments()(0) match {
       case c: java.lang.Class[_] => c
