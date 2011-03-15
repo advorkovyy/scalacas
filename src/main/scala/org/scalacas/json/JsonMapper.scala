@@ -46,7 +46,9 @@ abstract class AbstractJsonMapper[A <: AnyRef](prefix: String)(implicit mf:Manif
       case Some(col) =>
       	val parser = factory.createJsonParser(col.getValue)
       	parser.nextToken
-      	serializer.deserialize(parser)      	
+      	val res = serializer.deserialize(parser)
+      	parser.close()
+      	res
       case None => throw new RuntimeException("Cannot deserialize object: column with name '%s' not found".format(JSON))
     }
   }

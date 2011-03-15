@@ -30,7 +30,7 @@ trait Serializer[A] {
  *
  */
 object Serializers extends NumericTypesSerializers with CharTypesSerializers with UuidTypesSerializers with DateTypesSerializers {
-  private val serializers = Map[Class[_], Serializer[_ <: AnyRef]](
+  private[this] val serializers = Map[Class[_], Serializer[_ <: AnyRef]](
     classOf[String] -> UTF8Serializer,
     classOf[Long] -> LongSerializer,
     classOf[java.lang.Long] -> LongSerializer,

@@ -15,7 +15,7 @@ class ReflectionTest extends HasId {
   var i2: Integer = 2
   var s: String = "whatever"
   var l: Long = 3
-  var bd: BigDecimal = 2.33
+  var bd: Option[BigDecimal] = Some(2.33)
   def id = i.toString
 }
 
@@ -47,7 +47,7 @@ class ReflectionPerformanceTest extends SpecificationWithJUnit {
           case "i2" => result.i2 = new Bytes(col.getValue).toInt
           case "s" => result.s = new Bytes(col.getValue).toUTF8
           case "l" => result.l = new Bytes(col.getValue).toLong
-          case "bd" => result.bd = BigDecimal(new Bytes(col.getValue).toUTF8)
+          case "bd" => result.bd = Some(BigDecimal(new Bytes(col.getValue).toUTF8))
           case _ => // ignore
         }
         result
@@ -60,7 +60,7 @@ class ReflectionPerformanceTest extends SpecificationWithJUnit {
     rt.i2 = 20
     rt.s = "xxx aaa7"
     rt.l = 30
-    rt.bd = 45.78
+    rt.bd = Some(45.78)
 
     val mutator = new Mutator(null, 0, false)
     val scl = polyMapper.objectToColumns(mutator, rt)
@@ -79,24 +79,25 @@ class ReflectionPerformanceTest extends SpecificationWithJUnit {
 	  val jmutator = new Mutator(null, 0, false)
       val sclj = jsonMapper.objectToColumns(jmutator, rtb)
 
-    testMapperPerformance("custom mapper", mapper, scl)
+//    testMapperPerformance("custom mapper", mapper, scl)
     testMapperPerformance("reflection mapper", reflectionMapper, scl)
     testMapperPerformance("polymorphic mapper", polyMapper, scl)
     testMapperPerformance("JSON mapper", jsonMapper, sclj)
 
     testMapperPerformance("reflection mapper", reflectionMapper, scl)
     testMapperPerformance("polymorphic mapper", polyMapper, scl)
-    testMapperPerformance("custom mapper", mapper, scl)
+//    testMapperPerformance("custom mapper", mapper, scl)
     testMapperPerformance("JSON mapper", jsonMapper, sclj)
 
   }
 
   private def testMapperPerformance[A <: AnyRef](mapperName: String, mapper: Mapper[A], scl: Seq[Column]) {
+	  val mutator = new Mutator(null, 0, false)
     System.gc()
     val start = System.nanoTime
     for (i <- 1 to 1000000) {
-//    val scl = mapper.toSubColumnsList(mutator, rt)
       val obj = mapper.columnsToObject(scl)
+      mapper.objectToColumns(mutator, obj)
     }
 
     val end = System.nanoTime

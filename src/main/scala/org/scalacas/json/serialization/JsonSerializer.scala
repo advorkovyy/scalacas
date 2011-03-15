@@ -45,12 +45,23 @@ object JsonSerializers {
 	  jsf
   }
   
+  def register[T](jsf:JsonSerializerFactory[T])(implicit mf:Manifest[T]):JsonSerializerFactory[T] = {
+	  serializers(mf.erasure) = jsf
+	  jsf
+  }
+  
   private val serializers = new mutable.HashMap[Class[_], JsonSerializerFactory[_]] //with mutable.SynchronizedMap[Class[_], JsonSerializerFactory[_]]
   
   //
   //
   //
   register(new StringJsonSerializer with NullableValueJsonSerializer[String])
+  register(new CharJsonSerializer with NullableValueJsonSerializer[java.lang.Character])
+  register(new CharJsonSerializer, classOf[Char])
+  register(new BooleanJsonSerializer with NullableValueJsonSerializer[java.lang.Boolean])
+  register(new BooleanJsonSerializer, classOf[Boolean])
+  
+  register(OptionJsonSerializerFactory)
   
   //
   // Numeric types
