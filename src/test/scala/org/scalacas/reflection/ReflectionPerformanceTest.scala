@@ -82,8 +82,8 @@ class ReflectionPerformanceTest extends SpecificationWithJUnit {
     obj.l must be equalTo (rt.l)
     obj.bd must be equalTo (rt.bd)
     
-    val rtb = new ReflectionTestBean
-    val jsonMapper = new JsonMapper("", classOf[ReflectionTestBean])
+    val rtb = new ReflectionTest
+    val jsonMapper = new JsonMapper("", classOf[ReflectionTest])
 	   
 	  val jmutator = new Mutator(null, 0, false)
       val sclj = jsonMapper.objectToColumns(jmutator, rtb)

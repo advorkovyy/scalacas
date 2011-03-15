@@ -72,7 +72,9 @@ class RichClass[T](c: Class[T]) {
    */
   private lazy val constructor: Constructor[T] = {
     require(c.getConstructors().size > 0, c.getName + " has no constructors")
-    c.getConstructors()(0).asInstanceOf[Constructor[T]]
+    val ctor = c.getConstructors()(0).asInstanceOf[Constructor[T]]
+    ctor.setAccessible(true)
+    ctor
   }
 
   private lazy val constructorPars = Array((for {

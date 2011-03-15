@@ -33,14 +33,18 @@ abstract class AbstractJsonMapper[A <: AnyRef](prefix:String, clazz:Class[A]) ex
 	
 	def columnsToObject(subColumns:Seq[Column]):A = {
 		subColumns find ( col => Arrays.equals(JSON_BYTES.getBytes.array, col.getName) ) match {
-			case Some(col) => mapper.readValue(col.getValue, 0, col.getValue.size, clazz)
+			case Some(col) =>
+				//println(fromBytes[String](col.getValue))
+				mapper.readValue(col.getValue, 0, col.getValue.size, clazz)
 			case None => throw new RuntimeException("Cannot deserialize object: column with name '%s' not found".format(JSON))
 		}
 	}
 }
 
 object JsonMapper {
-	val mapper = new ObjectMapper
+	val mapper = new ObjectMapper()
+	mapper.registerModule(new scala.ScalaModule())
+	
 	val JSON = "-json"
 	val JSON_BYTES = toBytes(JSON)
 }

@@ -18,13 +18,13 @@ abstract class Mapper[A <: AnyRef](val prefix:String) {
 	def name(obj:A):String = {
 		val sb = new StringBuilder(fullPrefix)
 		sb ++= id(obj)
-		sb.result
+		sb.toString
 	}
 	
 	def name[P <: AnyRef](obj:A, parent:P)(implicit mP:Mapper[P]):String = {
 		val sb = new StringBuilder(fullPrefix(parent))
 		sb ++= id(obj)
-		sb.result
+		sb.toString
 	}
 	
 	val fullPrefix = prefix + " " 
@@ -33,7 +33,7 @@ abstract class Mapper[A <: AnyRef](val prefix:String) {
 		val sb = new StringBuilder(mP.name(parent))
 		sb ++= "/"
 		sb ++= fullPrefix
-		sb.result
+		sb.toString
 	}
 	
 	def id(obj:A):String
