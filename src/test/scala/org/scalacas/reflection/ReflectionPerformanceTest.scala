@@ -19,15 +19,6 @@ class ReflectionTest extends HasId {
   def id = i.toString
 }
 
-class ReflectionTestBean extends HasId {
-  @BeanProperty var i: Int = 1
-  @BeanProperty var i2: Integer = 2
-  @BeanProperty var s: String = "whatever"
-  @BeanProperty var l: Long = 3
-  @BeanProperty var bd: java.math.BigDecimal = new java.math.BigDecimal("2.33")
-  def id = i.toString
-}
-
 @RunWith(classOf[JUnitSuiteRunner])
 class ReflectionPerformanceTest extends SpecificationWithJUnit {
 
@@ -82,8 +73,8 @@ class ReflectionPerformanceTest extends SpecificationWithJUnit {
     obj.l must be equalTo (rt.l)
     obj.bd must be equalTo (rt.bd)
     
-    val rtb = new ReflectionTestBean
-    val jsonMapper = new JsonMapper("", classOf[ReflectionTestBean])
+    val rtb = new ReflectionTest
+    val jsonMapper = new JsonMapper[ReflectionTest]("")
 	   
 	  val jmutator = new Mutator(null, 0, false)
       val sclj = jsonMapper.objectToColumns(jmutator, rtb)
