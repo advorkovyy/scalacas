@@ -1,7 +1,7 @@
 package org.scalastuff.scalacas.beans
 
-import org.scalacas.{Mapper, HasIdSupport, HasId}
-import org.scalacas.serialization.Serializers._
+import org.scalastuff.scalacas.{Mapper, HasIdSupport, HasId}
+import org.scalastuff.scalacas.serialization.Serializers._
 import org.apache.cassandra.thrift.Column
 import org.scale7.cassandra.pelops.{Bytes, Mutator}
 import java.util.Arrays

@@ -1,4 +1,4 @@
-package org.scalacas
+package org.scalastuff.scalacas
 import org.scale7.cassandra.pelops.Mutator
 import org.apache.cassandra.thrift.Column
 
@@ -11,7 +11,7 @@ import org.apache.cassandra.thrift.Column
  * Must be thread-safe.
  * 
  * @author Alexander Dvorkovyy
- * @see {@link org.scalacas.reflection.ReflectionMapper}, {@link org.scalacas.reflection.PolymorphicMapper},
+ * @see {@link org.scalastuff.scalacas.reflection.ReflectionMapper}, {@link org.scalastuff.scalacas.reflection.PolymorphicMapper},
  *  {@link HasIdSupport}
  */
 abstract class Mapper[A <: AnyRef](val prefix:String) {

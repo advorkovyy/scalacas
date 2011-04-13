@@ -1,4 +1,4 @@
-package org.scalacas.serialization
+package org.scalastuff.scalacas.serialization
 
 import org.scale7.cassandra.pelops.Bytes
 import java.nio.ByteBuffer

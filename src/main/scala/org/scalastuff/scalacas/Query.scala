@@ -1,4 +1,4 @@
-package org.scalacas
+package org.scalastuff.scalacas
 
 import org.scale7.cassandra.pelops._
 import org.apache.cassandra.thrift._

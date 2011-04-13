@@ -1,4 +1,4 @@
-package org.scalacas.serialization
+package org.scalastuff.scalacas.serialization
 
 import java.nio.ByteBuffer
 import java.lang.reflect.{ Type, ParameterizedType }

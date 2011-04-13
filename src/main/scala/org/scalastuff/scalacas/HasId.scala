@@ -1,4 +1,4 @@
-package org.scalacas
+package org.scalastuff.scalacas
 
 /**
  * Implement this trait in your domain object if you want SuperColumn name be generated automatically.

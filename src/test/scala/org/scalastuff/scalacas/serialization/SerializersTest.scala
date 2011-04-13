@@ -1,4 +1,4 @@
-package org.scalacas.serialization
+package org.scalastuff.scalacas.serialization
 
 import org.specs.SpecificationWithJUnit
 import org.junit.runner.RunWith

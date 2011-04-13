@@ -1,7 +1,7 @@
 package org.scalastuff.scalacas.beans
 
 import scala.reflect.BeanProperty
-import org.scalacas.{ Mapper, HasId, HasIdSupport }
+import org.scalastuff.scalacas.{ Mapper, HasId, HasIdSupport }
 import org.scale7.cassandra.pelops.{ Mutator, Bytes }
 import org.apache.cassandra.thrift.Column
 import org.specs.SpecificationWithJUnit

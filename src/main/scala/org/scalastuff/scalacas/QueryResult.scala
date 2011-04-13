@@ -1,4 +1,4 @@
-package org.scalacas
+package org.scalastuff.scalacas
 
 import scala.collection.JavaConversions._
 import org.scale7.cassandra.pelops.Bytes
