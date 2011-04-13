@@ -3,12 +3,12 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>scalacas</groupId>
 	<artifactId>scalacas</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.1-SNAPSHOT</version>
 	<dependencies>
 		<dependency>
 			<groupId>org.scale7</groupId>
 			<artifactId>scale7-pelops</artifactId>
-			<version>1.0-RC1-0.7.0-SNAPSHOT</version>
+			<version>1.1-0.7.x-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.scala-tools.testing</groupId>
@@ -19,13 +19,13 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.7</version>
+			<version>4.8</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.6.1</version>
+			<groupId>org.clapper</groupId>
+			<artifactId>grizzled-slf4j_2.8.1</artifactId>
+			<version>0.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -33,19 +33,21 @@
 			<version>1.6.1</version>
 		</dependency>
 		<dependency>
-			<groupId>joda-time</groupId>
-			<artifactId>joda-time</artifactId>
-			<version>1.6.2</version>
+			<groupId>org.scalastuff</groupId>
+			<artifactId>scalabeans</artifactId>
+			<version>0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-core-asl</artifactId>
-			<version>1.7.1</version>
+			<groupId>com.dyuproject.protostuff</groupId>
+			<artifactId>protostuff-api</artifactId>
+			<version>1.0.0</version>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-mapper-asl</artifactId>
-			<version>1.7.1</version>
+			<groupId>com.dyuproject.protostuff</groupId>
+			<artifactId>protostuff-core</artifactId>
+			<version>1.0.0</version>
+			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 	<repositories>
