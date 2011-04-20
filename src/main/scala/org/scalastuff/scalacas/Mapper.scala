@@ -11,8 +11,6 @@ import org.apache.cassandra.thrift.Column
  * Must be thread-safe.
  * 
  * @author Alexander Dvorkovyy
- * @see {@link org.scalastuff.scalacas.reflection.ReflectionMapper}, {@link org.scalastuff.scalacas.reflection.PolymorphicMapper},
- *  {@link HasIdSupport}
  */
 abstract class Mapper[A <: AnyRef](val prefix:String) {
 	def name(obj:A):String = {
@@ -38,5 +36,5 @@ abstract class Mapper[A <: AnyRef](val prefix:String) {
 	
 	def id(obj:A):String
 	def objectToColumns(mutator:Mutator, obj:A):Seq[Column]
-	def columnsToObject(subColumns:Seq[Column]):A
+	def columnsToObject(superColumnName: Array[Byte], subColumns:Seq[Column]):A
 }

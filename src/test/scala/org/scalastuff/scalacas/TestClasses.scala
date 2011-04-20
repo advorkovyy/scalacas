@@ -11,19 +11,19 @@ object TestClasses {
 
   implicit val scmA = new Mapper[A]("A") {
 	  def objectToColumns(mutator:Mutator, obj:A) = Nil
-	  def columnsToObject(subColumns:Seq[Column]) = A(id = Selector.getColumnValue(subColumns, "id").toInt)
+	  def columnsToObject(superColumnName: Array[Byte], subColumns:Seq[Column]) = A(id = Selector.getColumnValue(subColumns, "id").toInt)
 	  def id(obj:A) = obj.id.toString
   }
   
   implicit val scmB = new Mapper[B]("B") {
 	  def objectToColumns(mutator:Mutator, obj:B) = Nil
-	  def columnsToObject(subColumns:Seq[Column]) = B(id = Selector.getColumnValue(subColumns, "id").toInt)
+	  def columnsToObject(superColumnName: Array[Byte], subColumns:Seq[Column]) = B(id = Selector.getColumnValue(subColumns, "id").toInt)
 	  def id(obj:B) = obj.id.toString
   }
   
   implicit val scmC = new Mapper[C]("C") {
 	  def objectToColumns(mutator:Mutator, obj:C) = Nil
-	  def columnsToObject(subColumns:Seq[Column]) = C(id = Selector.getColumnValue(subColumns, "id").toInt)
+	  def columnsToObject(superColumnName: Array[Byte], subColumns:Seq[Column]) = C(id = Selector.getColumnValue(subColumns, "id").toInt)
 	  def id(obj:C) = obj.id.toString
   }
 }

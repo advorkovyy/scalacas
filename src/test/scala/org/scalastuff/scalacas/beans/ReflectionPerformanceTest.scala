@@ -38,7 +38,7 @@ class ReflectionPerformanceTest extends SpecificationWithJUnit {
     
     val mapper = new Mapper[ReflectionTest]("") with HasIdSupport[ReflectionTest] {
       def objectToColumns(mutator: Mutator, obj: ReflectionTest): Seq[Column] = throw new RuntimeException
-      def columnsToObject(subColumns: Seq[Column]): ReflectionTest = {
+      def columnsToObject(superColumnName: Array[Byte], subColumns: Seq[Column]): ReflectionTest = {
         val result = new ReflectionTest
         for (col <- subColumns) new Bytes(col.getName).toUTF8 match {
           case "i" => result.i = new Bytes(col.getValue).toInt
@@ -67,7 +67,7 @@ class ReflectionPerformanceTest extends SpecificationWithJUnit {
     val pmutator = new Mutator(null, 0, false)
     val pscl = protoMapper.objectToColumns(pmutator, rt)
 
-    val obj = protoMapper.columnsToObject(pscl)
+    val obj = protoMapper.columnsToObject(null, pscl)
     obj.i must be equalTo (rt.i)
     obj.i2 must be equalTo (rt.i2)
     obj.s must be equalTo (rt.s)
@@ -85,7 +85,7 @@ class ReflectionPerformanceTest extends SpecificationWithJUnit {
     val start = System.nanoTime
     for (i <- 1 to 1000000) {
       //    val scl = mapper.toSubColumnsList(mutator, rt)
-      val obj = mapper.columnsToObject(scl)
+      val obj = mapper.columnsToObject(null, scl)
     }
 
     val end = System.nanoTime
