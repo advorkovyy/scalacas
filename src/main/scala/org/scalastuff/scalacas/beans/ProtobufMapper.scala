@@ -22,8 +22,6 @@ abstract class AbstractProtobufMapper[A <: AnyRef](prefix: String)(implicit mf: 
   import ProtobufMapper._
 
   val beanValueHandler = BeanValueHandler(scalaTypeOf[A])
-  // TODO: must be thread local!!!!
-  val linkedBuffer = LinkedBuffer.allocate(512)
 
   def objectToColumns(mutator: Mutator, obj: A): Seq[Column] = {
     linkedBuffer.clear()
@@ -47,4 +45,10 @@ abstract class AbstractProtobufMapper[A <: AnyRef](prefix: String)(implicit mf: 
 object ProtobufMapper {
   val PROTOBUF = "-protobuf"
   val PROTOBUF_BYTES = toBytes(PROTOBUF)
+  
+  val linkedBufferPool = new ThreadLocal[LinkedBuffer] {
+    override protected def initialValue() = LinkedBuffer.allocate(512)
+  }
+  
+  def linkedBuffer = linkedBufferPool.get
 }
